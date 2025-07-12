@@ -38,6 +38,11 @@ export const RegistrationForm = ({ onSuccess }: RegistrationFormProps) => {
     setFormData(prev => ({ ...prev, [field]: value }));
   };
 
+  const handlePriorExperienceChange = (checked: boolean | "indeterminate") => {
+    const booleanValue = checked === true;
+    setHasPriorExperience(booleanValue);
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -228,7 +233,7 @@ export const RegistrationForm = ({ onSuccess }: RegistrationFormProps) => {
               <Checkbox
                 id="prior_experience"
                 checked={hasPriorExperience}
-                onCheckedChange={setHasPriorExperience}
+                onCheckedChange={handlePriorExperienceChange}
               />
               <Label htmlFor="prior_experience">
                 Does your child have prior tech experience?
