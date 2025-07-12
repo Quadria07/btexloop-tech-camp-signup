@@ -8,6 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { FileText } from "lucide-react";
 
 interface RegistrationFormProps {
   onSuccess: (data: any) => void;
@@ -68,7 +69,7 @@ export const RegistrationForm = ({ onSuccess }: RegistrationFormProps) => {
       });
 
       toast({
-        title: "Registration Successful! 🎉",
+        title: "Registration Successful!",
         description: "Thank you for registering. We'll contact you within 24 hours.",
       });
 
@@ -86,14 +87,17 @@ export const RegistrationForm = ({ onSuccess }: RegistrationFormProps) => {
   };
 
   return (
-    <section className="py-16 px-4" style={{ backgroundColor: '#F7AD92' }}>
-      <div className="container mx-auto max-w-2xl">
-        <h2 className="text-4xl font-bold text-center mb-12 text-white">
-          📝 Register Your Child
-        </h2>
+    <section className="py-12 md:py-16 px-4" style={{ backgroundColor: '#F7AD92' }}>
+      <div className="container mx-auto max-w-4xl">
+        <div className="flex items-center justify-center space-x-3 mb-8 md:mb-12">
+          <FileText className="w-8 h-8 md:w-10 md:h-10 text-white" />
+          <h2 className="text-3xl md:text-4xl font-bold text-center text-white">
+            Register Your Child
+          </h2>
+        </div>
         
-        <form onSubmit={handleSubmit} className="bg-white rounded-lg p-8 shadow-lg space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <form onSubmit={handleSubmit} className="bg-white rounded-lg p-6 md:p-8 shadow-lg space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
             <div>
               <Label htmlFor="full_name">Child's Full Name *</Label>
               <Input
@@ -101,6 +105,7 @@ export const RegistrationForm = ({ onSuccess }: RegistrationFormProps) => {
                 required
                 value={formData.full_name}
                 onChange={(e) => handleInputChange('full_name', e.target.value)}
+                className="mt-1"
               />
             </div>
             
@@ -114,15 +119,16 @@ export const RegistrationForm = ({ onSuccess }: RegistrationFormProps) => {
                 required
                 value={formData.age}
                 onChange={(e) => handleInputChange('age', e.target.value)}
+                className="mt-1"
               />
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
             <div>
               <Label>Gender *</Label>
               <Select onValueChange={(value) => handleInputChange('gender', value)} required>
-                <SelectTrigger>
+                <SelectTrigger className="mt-1">
                   <SelectValue placeholder="Select gender" />
                 </SelectTrigger>
                 <SelectContent>
@@ -135,7 +141,7 @@ export const RegistrationForm = ({ onSuccess }: RegistrationFormProps) => {
             <div>
               <Label>Course Choice *</Label>
               <Select onValueChange={(value) => handleInputChange('course_choice', value)} required>
-                <SelectTrigger>
+                <SelectTrigger className="mt-1">
                   <SelectValue placeholder="Select course" />
                 </SelectTrigger>
                 <SelectContent>
@@ -147,7 +153,7 @@ export const RegistrationForm = ({ onSuccess }: RegistrationFormProps) => {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
             <div>
               <Label htmlFor="school_name">School Name *</Label>
               <Input
@@ -155,6 +161,7 @@ export const RegistrationForm = ({ onSuccess }: RegistrationFormProps) => {
                 required
                 value={formData.school_name}
                 onChange={(e) => handleInputChange('school_name', e.target.value)}
+                className="mt-1"
               />
             </div>
             
@@ -165,11 +172,12 @@ export const RegistrationForm = ({ onSuccess }: RegistrationFormProps) => {
                 required
                 value={formData.current_class}
                 onChange={(e) => handleInputChange('current_class', e.target.value)}
+                className="mt-1"
               />
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
             <div>
               <Label htmlFor="parent_name">Parent/Guardian Name *</Label>
               <Input
@@ -177,6 +185,7 @@ export const RegistrationForm = ({ onSuccess }: RegistrationFormProps) => {
                 required
                 value={formData.parent_name}
                 onChange={(e) => handleInputChange('parent_name', e.target.value)}
+                className="mt-1"
               />
             </div>
             
@@ -188,6 +197,7 @@ export const RegistrationForm = ({ onSuccess }: RegistrationFormProps) => {
                 required
                 value={formData.phone_number}
                 onChange={(e) => handleInputChange('phone_number', e.target.value)}
+                className="mt-1"
               />
             </div>
           </div>
@@ -200,6 +210,7 @@ export const RegistrationForm = ({ onSuccess }: RegistrationFormProps) => {
               required
               value={formData.email_address}
               onChange={(e) => handleInputChange('email_address', e.target.value)}
+              className="mt-1"
             />
           </div>
 
@@ -210,13 +221,14 @@ export const RegistrationForm = ({ onSuccess }: RegistrationFormProps) => {
               required
               value={formData.home_address}
               onChange={(e) => handleInputChange('home_address', e.target.value)}
+              className="mt-1"
             />
           </div>
 
           <div>
             <Label>How did you hear about us? *</Label>
             <Select onValueChange={(value) => handleInputChange('referral_source', value)} required>
-              <SelectTrigger>
+              <SelectTrigger className="mt-1">
                 <SelectValue placeholder="Select source" />
               </SelectTrigger>
               <SelectContent>
@@ -248,6 +260,7 @@ export const RegistrationForm = ({ onSuccess }: RegistrationFormProps) => {
                   value={formData.prior_tech_details}
                   onChange={(e) => handleInputChange('prior_tech_details', e.target.value)}
                   placeholder="Tell us about your child's previous tech experience..."
+                  className="mt-1"
                 />
               </div>
             )}
@@ -256,10 +269,10 @@ export const RegistrationForm = ({ onSuccess }: RegistrationFormProps) => {
           <Button
             type="submit"
             disabled={loading}
-            className="w-full py-3 text-lg font-semibold"
+            className="w-full py-3 text-base md:text-lg font-semibold"
             style={{ backgroundColor: '#FF7947' }}
           >
-            {loading ? "Registering..." : "Register Now 🚀"}
+            {loading ? "Registering..." : "Register Now"}
           </Button>
         </form>
       </div>
