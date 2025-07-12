@@ -14,7 +14,60 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      bootcamp_registrations: {
+        Row: {
+          age: number
+          course_choice: string
+          created_at: string
+          current_class: string
+          email_address: string
+          full_name: string
+          gender: string
+          home_address: string
+          id: string
+          parent_name: string
+          phone_number: string
+          prior_tech_details: string | null
+          prior_tech_experience: boolean
+          referral_source: string
+          school_name: string
+        }
+        Insert: {
+          age: number
+          course_choice: string
+          created_at?: string
+          current_class: string
+          email_address: string
+          full_name: string
+          gender: string
+          home_address: string
+          id?: string
+          parent_name: string
+          phone_number: string
+          prior_tech_details?: string | null
+          prior_tech_experience?: boolean
+          referral_source: string
+          school_name: string
+        }
+        Update: {
+          age?: number
+          course_choice?: string
+          created_at?: string
+          current_class?: string
+          email_address?: string
+          full_name?: string
+          gender?: string
+          home_address?: string
+          id?: string
+          parent_name?: string
+          phone_number?: string
+          prior_tech_details?: string | null
+          prior_tech_experience?: boolean
+          referral_source?: string
+          school_name?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
