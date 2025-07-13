@@ -1,5 +1,8 @@
 
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
+import { Resend } from "npm:resend@2.0.0";
+
+const resend = new Resend(Deno.env.get("RESEND_API_KEY"));
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -32,74 +35,125 @@ const handler = async (req: Request): Promise<Response> => {
   try {
     const { registrationData }: { registrationData: RegistrationData } = await req.json();
 
-    // For now, we'll just log the registration data
-    // In a real implementation, you would integrate with an email service like Resend
-    console.log("New Registration:", registrationData);
+    console.log("Processing registration for:", registrationData.full_name);
 
-    // Simulate email sending
     const adminEmails = ["quadriadebisi3@gmail.com", "btexloopacademy@gmail.com"];
     
     // Admin notification email content
     const adminEmailContent = `
-      New Btexloop Summer Tech Bootcamp 2025 Registration
+      <h2>New Btexloop Summer Tech Bootcamp 2025 Registration</h2>
       
-      Child Information:
-      - Name: ${registrationData.full_name}
-      - Age: ${registrationData.age}
-      - Gender: ${registrationData.gender}
-      - School: ${registrationData.school_name}
-      - Current Class: ${registrationData.current_class}
-      - Course Choice: ${registrationData.course_choice}
+      <h3>Child Information:</h3>
+      <ul>
+        <li><strong>Name:</strong> ${registrationData.full_name}</li>
+        <li><strong>Age:</strong> ${registrationData.age}</li>
+        <li><strong>Gender:</strong> ${registrationData.gender}</li>
+        <li><strong>School:</strong> ${registrationData.school_name}</li>
+        <li><strong>Current Class:</strong> ${registrationData.current_class}</li>
+        <li><strong>Course Choice:</strong> ${registrationData.course_choice}</li>
+      </ul>
       
-      Parent Information:
-      - Parent Name: ${registrationData.parent_name}
-      - Phone: ${registrationData.phone_number}
-      - Email: ${registrationData.email_address}
-      - Address: ${registrationData.home_address}
+      <h3>Parent Information:</h3>
+      <ul>
+        <li><strong>Parent Name:</strong> ${registrationData.parent_name}</li>
+        <li><strong>Phone:</strong> ${registrationData.phone_number}</li>
+        <li><strong>Email:</strong> ${registrationData.email_address}</li>
+        <li><strong>Address:</strong> ${registrationData.home_address}</li>
+      </ul>
       
-      Other Details:
-      - Prior Tech Experience: ${registrationData.prior_tech_experience ? 'Yes' : 'No'}
-      ${registrationData.prior_tech_details ? `- Experience Details: ${registrationData.prior_tech_details}` : ''}
-      - How they heard about us: ${registrationData.referral_source}
-      - Registration Time: ${new Date(registrationData.created_at).toLocaleString()}
+      <h3>Other Details:</h3>
+      <ul>
+        <li><strong>Prior Tech Experience:</strong> ${registrationData.prior_tech_experience ? 'Yes' : 'No'}</li>
+        ${registrationData.prior_tech_details ? `<li><strong>Experience Details:</strong> ${registrationData.prior_tech_details}</li>` : ''}
+        <li><strong>How they heard about us:</strong> ${registrationData.referral_source}</li>
+        <li><strong>Registration Time:</strong> ${new Date(registrationData.created_at).toLocaleString()}</li>
+      </ul>
     `;
 
     // Parent confirmation email content
     const parentEmailContent = `
-      Thank you for registering ${registrationData.full_name} for the Btexloop Summer Tech Bootcamp 2025!
+      <h2>Thank you for registering ${registrationData.full_name} for the Btexloop Summer Tech Bootcamp 2025!</h2>
       
-      Registration Summary:
-      - Child: ${registrationData.full_name} (Age ${registrationData.age})
-      - Course: ${registrationData.course_choice}
-      - Start Date: July 28th, 2025
-      - Time: 10:00 AM – 12:00 PM
-      - Location: City Hall, Olonkoro, Osogbo, Osun State
+      <h3>Registration Summary:</h3>
+      <ul>
+        <li><strong>Child:</strong> ${registrationData.full_name} (Age ${registrationData.age})</li>
+        <li><strong>Course:</strong> ${registrationData.course_choice}</li>
+        <li><strong>Start Date:</strong> July 28th, 2025</li>
+        <li><strong>Time:</strong> 10:00 AM – 12:00 PM</li>
+        <li><strong>Location:</strong> City Hall, Olonkoro, Osogbo, Osun State</li>
+      </ul>
       
-      Next Steps:
-      Our team will contact you within 24 hours at ${registrationData.phone_number} to complete payment and onboarding.
+      <h3>Next Steps:</h3>
+      <p>Our team will contact you within 24 hours at ${registrationData.phone_number} to complete payment and onboarding.</p>
       
-      Contact us:
-      Phone/WhatsApp: +234 813 122 6618, +234 903 218 8542
-      Email: info@btexloopacademy.com.ng
+      <h3>Contact us:</h3>
+      <ul>
+        <li><strong>Phone/WhatsApp:</strong> +234 813 122 6618, +234 903 218 8542</li>
+        <li><strong>Email:</strong> info@btexloopacademy.com.ng</li>
+      </ul>
       
-      CATCH THEM YOUNG, EMPOWER THEM ALWAYS
-      - Btexloop Academy Team
+      <p><strong>CATCH THEM YOUNG, EMPOWER THEM ALWAYS</strong><br>
+      - Btexloop Academy Team</p>
     `;
 
-    console.log("Admin Email Content:", adminEmailContent);
-    console.log("Parent Email Content:", parentEmailContent);
-    console.log("Admin Emails:", adminEmails);
-    console.log("Parent Email:", registrationData.email_address);
+    // Send admin notification emails
+    const adminEmailPromises = adminEmails.map(async (adminEmail) => {
+      try {
+        const emailResponse = await resend.emails.send({
+          from: "Btexloop Academy <onboarding@resend.dev>",
+          to: [adminEmail],
+          subject: `New Registration: ${registrationData.full_name} - ${registrationData.course_choice}`,
+          html: adminEmailContent,
+        });
+        console.log(`Admin email sent to ${adminEmail}:`, emailResponse);
+        return { email: adminEmail, success: true, response: emailResponse };
+      } catch (error) {
+        console.error(`Failed to send admin email to ${adminEmail}:`, error);
+        return { email: adminEmail, success: false, error: error.message };
+      }
+    });
+
+    // Send parent confirmation email
+    const parentEmailPromise = (async () => {
+      try {
+        const emailResponse = await resend.emails.send({
+          from: "Btexloop Academy <onboarding@resend.dev>",
+          to: [registrationData.email_address],
+          subject: `Registration Confirmed - ${registrationData.full_name} - Btexloop Summer Tech Bootcamp 2025`,
+          html: parentEmailContent,
+        });
+        console.log(`Parent email sent to ${registrationData.email_address}:`, emailResponse);
+        return { email: registrationData.email_address, success: true, response: emailResponse };
+      } catch (error) {
+        console.error(`Failed to send parent email to ${registrationData.email_address}:`, error);
+        return { email: registrationData.email_address, success: false, error: error.message };
+      }
+    })();
+
+    // Wait for all emails to be sent
+    const [adminResults, parentResult] = await Promise.all([
+      Promise.all(adminEmailPromises),
+      parentEmailPromise
+    ]);
+
+    const successfulEmails = adminResults.filter(result => result.success).length;
+    const totalEmails = adminResults.length + 1; // +1 for parent email
+    const allSuccessful = successfulEmails === adminResults.length && parentResult.success;
 
     return new Response(
       JSON.stringify({ 
-        success: true, 
-        message: "Registration notification sent successfully",
-        adminEmails,
-        parentEmail: registrationData.email_address
+        success: allSuccessful,
+        message: allSuccessful 
+          ? "Registration notification emails sent successfully"
+          : "Some emails failed to send",
+        details: {
+          adminEmails: adminResults,
+          parentEmail: parentResult,
+          summary: `${successfulEmails + (parentResult.success ? 1 : 0)}/${totalEmails} emails sent successfully`
+        }
       }),
       {
-        status: 200,
+        status: allSuccessful ? 200 : 207, // 207 = Multi-Status for partial success
         headers: {
           "Content-Type": "application/json",
           ...corsHeaders,
