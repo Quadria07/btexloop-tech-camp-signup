@@ -15,6 +15,13 @@ export const HeroSection = () => {
           Equip your child (ages 5–18) with 21st-century tech skills this summer.
         </p>
         
+        {/* Emotional Hook */}
+        <div className="mb-8 md:mb-10">
+          <p className="text-lg md:text-xl lg:text-2xl font-medium leading-relaxed max-w-4xl mx-auto">
+            🌟 "This summer, let your child build something meaningful — not just play. From robots to smart apps, watch them grow into tech creators."
+          </p>
+        </div>
+        
         <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4 md:p-6 max-w-4xl mx-auto mb-6 md:mb-8">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4 text-left">
             <div className="flex items-center space-x-2">

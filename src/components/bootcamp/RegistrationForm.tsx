@@ -8,7 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { FileText } from "lucide-react";
+import { FileText, AlertCircle } from "lucide-react";
 
 interface RegistrationFormProps {
   onSuccess: (data: any) => void;
@@ -89,6 +89,17 @@ export const RegistrationForm = ({ onSuccess }: RegistrationFormProps) => {
   return (
     <section className="py-12 md:py-16 px-4" style={{ backgroundColor: '#F7AD92' }}>
       <div className="container mx-auto max-w-4xl">
+        {/* Urgency Message */}
+        <div className="bg-orange-100 border-l-4 border-orange-500 p-4 mb-8 rounded-r-lg">
+          <div className="flex items-center">
+            <AlertCircle className="w-5 h-5 text-orange-500 mr-3 flex-shrink-0" />
+            <div>
+              <p className="text-orange-800 font-semibold">Limited slots available – reserve a space for your child today!</p>
+              <p className="text-orange-700 text-sm mt-1">Only children with completed registration and payment will be admitted.</p>
+            </div>
+          </div>
+        </div>
+
         <div className="flex items-center justify-center space-x-3 mb-8 md:mb-12">
           <FileText className="w-8 h-8 md:w-10 md:h-10 text-white" />
           <h2 className="text-3xl md:text-4xl font-bold text-center text-white">
